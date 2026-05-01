@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin | Kantin SMAN 1</title>
+<style>
+  :root {
+    --bg: #09090b; --bg2: #111118; --card: #161622; --border: #27273a;
+    --text: #fafafa; --text2: #a1a1aa; --accent: #8b5cf6; --danger: #ef4444; --success: #10b981; --warning: #f59e0b;
+    --radius: 18px;
+  }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { 
+    font-family: 'Inter', system-ui; background: var(--bg); color: var(--text); padding: 24px;
+    background-image: 
+      radial-gradient(at 100% 0%, rgba(139,92,246,0.12) 0px, transparent 50%),
+      radial-gradient(at 0% 100%, rgba(16,185,129,0.08) 0px, transparent 50%);
+    background-attachment: fixed;
+  }
+.container { max-width: 1400px; margin: 0 auto; }
+.login-box { max-width: 420px; margin: 100px auto; background: var(--card); padding: 40px; border-radius: var(--radius); border: 1px solid var(--border); animation: slideUp.5s ease; }
+  @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } }
+.header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; flex-wrap: wrap; gap: 16px; }
+  h1 { background: linear-gradient(135deg, var(--accent), #06b6d4); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 2rem; font-weight: 900; }
+.tabs { display: flex; gap: 8px; background: var(--card); padding: 6px; border-radius: 14px; border: 1px solid var(--border); margin-bottom: 24px; }
+.tab { padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; transition:.3s; color: var(--text2); }
+.tab.active { background: var(--accent); color: white; }
+.btn { background: linear-gradient(135deg, var(--accent), #7c3aed); color: white; border: none; padding: 12px 22px; border-radius: 12px; font-weight: 700; cursor: pointer; transition:.3s; font-size: 14px; }
+.btn:hover { filter: brightness(1.1); transform: translateY(-2px); }
+.btn-danger { background: var(--danger); }
+.btn-success { background: var(--success); }
+.btn-sm { padding: 8px 14px; font-size: 13px; }
+  input, select, textarea { width: 100%; background: var(--bg2); border: 1px solid var(--border); color: var(--text); padding: 14px; border-radius: 14px; margin-bottom: 14px; outline: none; font-size: 15px; }
+  input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(139,92,246,0.1); }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.card { background: var(--card); padding: 28px; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 24px; }
+.list-item { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-bottom: 14px; display: flex; gap: 16px; align-items: center; transition:.3s; }
+.list-item:hover { border-color: var(--accent); }
+.list-item img { width: 70px; height: 70px; border-radius: 12px; object-fit: cover; }
+.list-info { flex: 1; }
+.list-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.hidden { display: none; }
+.back-link { color: var(--accent); text-decoration: none; font-size: 14px; font-weight: 500; }
+.help { font-size: 12px; color: var(--text2); margin-top: -10px; margin-bottom: 14px; }
+.badge { padding: 4px 10px; border-radius: 99px; font-size: 12px; font-weight: 700; }
+.badge-baru { background: rgba(245,158,11,0.2); color: var(--warning); }
+.badge-proses { background: rgba(6,182,212,0.2); color: var(--accent2); }
+.badge-selesai { background: rgba(16,185,129,0.2); color: var(--success); }
+.order-detail { font-size: 13px; color: var(--text2); margin-top: 8px; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.stat-card { background: var(--card); border: 1px solid var(--border); padding: 20px; border-radius: 16px; }
+.stat-value { font-size: 2rem; font-weight: 900; margin-bottom: 4px; }
+.stat-label { font-size: 13px; color: var(--text2); }
+  @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } .list-item { flex-direction: column; align-items: start; } }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div id="loginPage" class="login-box">
+      <h1 style="margin-bottom: 28px; text-align: center;">Admin Kantin</h1>
+      <input type="email" id="emailInput" placeholder="Email admin">
+      <input type="password" id="passInput" placeholder="Password">
+      <button class="btn" style="width:100%" id="loginBtn">Masuk Dashboard</button>
+      <p style="text-align:center; margin-top:20px;"><a href="/index.html" class="back-link">← Kembali ke Kantin</a></p>
+    </div>
+
+    <div id="adminPage" class="hidden">
+      <div class="header">
+        <h1>Dashboard Kantin Gian</h1>
+        <div style="display:flex; gap:12px; align-items:center;">
+          <span id="adminEmail" style="color:var(--text2); font-size:14px;"></span>
+          <a href="/index.html" class="back-link">Lihat Kantin</a>
+          <button class="btn btn-danger btn-sm" id="logoutBtn">Logout</button>
+        </div>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab('menu')">Tambah Menu</div>
+        <div class="tab" onclick="switchTab('pesanan')">Pesanan Masuk</div>
+        <div class="tab" onclick="switchTab('admin')">Kelola Admin</div>
+      </div>
+
+      <!-- TAB MENU -->
+      <div id="tab-menu">
+        <div class="stats">
+          <div class="stat-card">
+            <div class="stat-value" id="totalMenu">0</div>
+            <div class="stat-label">Total Menu</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="totalPesanan">0</div>
+            <div class="stat-label">Pesanan Hari Ini</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom:20px" id="formTitle">Tambah Menu Baru</h3>
+          <form id="productForm">
+            <input type="hidden" id="editId">
+            <div class="form-grid">
+              <input type="text" id="name" placeholder="Nama Menu, ex: Nasi Goreng" required>
+              <input type="number" id="price" placeholder="Harga, ex: 10000" required>
+            </div>
+            <div class="form-grid">
+              <input type="text" id="cat" placeholder="Kategori: Makanan, Minuman, Snack" required>
+              <input type="number" id="stok" placeholder="Stok Awal" required>
+            </div>
+            <input type="url" id="imgUrl" placeholder="URL Gambar!" required>
+            <div class="help"></div>
+            <button type="submit" class="btn" id="submitBtn">Simpan Menu</button>
+            <button type="button" class="btn" style="background:var(--bg2); border:1px solid var(--border)" onclick="resetForm()">Batal</button>
+          </form>
+        </div>
+
+        <h3 style="margin: 32px 0 16px">Daftar Menu</h3>
+        <div id="productList"></div>
+      </div>
+
+      <!-- TAB PESANAN -->
+      <div id="tab-pesanan" class="hidden">
+        <div class="card">
+          <h3 style="margin-bottom:20px">Pesanan Masuk Realtime</h3>
+          <div id="orderList"></div>
+        </div>
+      </div>
+
+      <!-- TAB ADMIN -->
+      <div id="tab-admin" class="hidden">
+        <div class="card">
+          <h3 style="margin-bottom:20px">Tambah Admin Baru</h3>
+          <form id="adminForm">
+            <input type="email" id="adminEmailInput" placeholder="Email admin baru" required>
+            <input type="password" id="adminPassInput" placeholder="Password min 6 karakter" required>
+            <button type="submit" class="btn">Daftarkan Admin</button>
+          </form>
+          <div class="help"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+  import { getDatabase, ref, push, set, update, remove, onValue } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyDAa9Sdc7H8XGARunqQSVzVTwsBCddMeak",
+    authDomain: "smanegeri1cianjur.firebaseapp.com",
+    databaseURL: "https://smanegeri1cianjur-default-rtdb.asia-southeast1.firebasedatabase.app",
+       projectId: "smanegeri1cianjur",
+      storageBucket: "smanegeri1cianjur.firebasestorage.app",
+      messagingSenderId: "658794565592",
+      appId: "1:658794565592:web:50a93bca6b1a61d42eacad",
+      measurementId: "G-XHYELX78QJ"
+    };
+    
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+    
+    const $ = sel => document.querySelector(sel);
+    const rupiah = n => new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(n);
+    const showToast = msg => alert(msg); // Simple alert biar ga bentrok
+    
+    let PRODUCTS = {};
+    let ORDERS = {};
+    
+    onAuthStateChanged(auth, user => {
+      if (user) {
+        showAdmin();
+        $('#adminEmail').textContent = user.email;
+      } else showLogin();
+    });
+    
+    $('#loginBtn').onclick = () => {
+      const email = $('#emailInput').value;
+      const pass = $('#passInput').value;
+      signInWithEmailAndPassword(auth, email, pass).catch(e => showToast('Login gagal: ' + e.message));
+    };
+    
+    $('#logoutBtn').onclick = () => signOut(auth);
+    
+    function showLogin() {
+      $('#loginPage').classList.remove('hidden');
+      $('#adminPage').classList.add('hidden');
+    }
+    
+    function showAdmin() {
+      $('#loginPage').classList.add('hidden');
+      $('#adminPage').classList.remove('hidden');
+      loadProducts();
+      loadOrders();
+    }
+    
+    window.switchTab = (tab) => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('[id^="tab-"]').forEach(t => t.classList.add('hidden'));
+      event.target.classList.add('active');
+      $('#tab-' + tab).classList.remove('hidden');
+    }
+    
+    function loadProducts() {
+      onValue(ref(db, 'products'), (snapshot) => {
+        PRODUCTS = snapshot.val() || {};
+        renderProductList();
+        updateStats();
+      });
+    }
+    
+    function loadOrders() {
+      onValue(ref(db, 'orders'), (snapshot) => {
+        ORDERS = snapshot.val() || {};
+        renderOrderList();
+        updateStats();
+      });
+    }
+    
+    function updateStats() {
+      $('#totalMenu').textContent = Object.keys(PRODUCTS).length;
+      const today = new Date().toDateString();
+      const todayOrders = Object.values(ORDERS).filter(o => new Date(o.waktu).toDateString() === today).length;
+      $('#totalPesanan').textContent = todayOrders;
+    }
+    
+    function renderProductList() {
+      const arr = Object.keys(PRODUCTS).map(key => ({ id: key, ...PRODUCTS[key] }));
+      $('#productList').innerHTML = arr.map(p => `
+      <div class="list-item">
+        <img src="${p.img}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/70'">
+        <div class="list-info">
+          <strong>${p.name}</strong><br>
+          <span style="color:var(--text2)">${p.cat} • ${rupiah(p.price)} • Stok: ${p.stok}</span>
+        </div>
+        <div class="list-actions">
+          <button class="btn btn-sm" onclick="editProduct('${p.id}')">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')">Hapus</button>
+        </div>
+      </div>
+    `).join('') || '<p style="color:var(--text2); text-align:center; padding:40px">Belum ada menu</p>';
+    }
+    
+    function renderOrderList() {
+      const arr = Object.keys(ORDERS).map(key => ({ id: key, ...ORDERS[key] })).sort((a, b) => b.waktu - a.waktu);
+      $('#orderList').innerHTML = arr.map(o => `
+      <div class="list-item">
+        <div class="list-info">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px">
+            <strong>${o.nama} - ${o.kelas}</strong>
+            <span class="badge badge-${o.status}">${o.status.toUpperCase()}</span>
+          </div>
+          <div class="order-detail">
+            ${o.items.map(i => `${i.qty}x ${i.name}`).join(', ')}<br>
+            <strong>Total: ${rupiah(o.total)}</strong> ${o.catatan? '• Catatan: ' + o.catatan : ''}<br>
+            ${new Date(o.waktu).toLocaleString('id-ID')}
+          </div>
+        </div>
+        <div class="list-actions">
+          ${o.status === 'baru'? `<button class="btn btn-sm" onclick="updateOrderStatus('${o.id}', 'proses')">Proses</button>` : ''}
+          ${o.status === 'proses'? `<button class="btn btn-success btn-sm" onclick="updateOrderStatus('${o.id}', 'selesai')">Selesai</button>` : ''}
+          <button class="btn btn-danger btn-sm" onclick="deleteOrder('${o.id}')">Hapus</button>
+        </div>
+      </div>
+    `).join('') || '<p style="color:var(--text2); text-align:center; padding:40px">Belum ada pesanan masuk</p>';
+    }
+    
+    window.resetForm = () => {
+      $('#productForm').reset();
+      $('#editId').value = '';
+      $('#formTitle').textContent = 'Tambah Menu Baru';
+    }
+    
+    window.editProduct = (id) => {
+      const p = PRODUCTS[id];
+      $('#editId').value = id;
+      $('#name').value = p.name;
+      $('#price').value = p.price;
+      $('#cat').value = p.cat;
+      $('#stok').value = p.stok;
+      $('#imgUrl').value = p.img;
+      $('#formTitle').textContent = 'Edit Menu';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    window.deleteProduct = (id) => {
+      if (!confirm('Hapus menu ' + PRODUCTS[id].name + '?')) return;
+      remove(ref(db, 'products/' + id));
+    }
+    
+    window.updateOrderStatus = (id, status) => {
+      update(ref(db, 'orders/' + id), { status: status });
+    }
+    
+    window.deleteOrder = (id) => {
+      if (!confirm('Hapus pesanan ini?')) return;
+      remove(ref(db, 'orders/' + id));
+    }
+    
+    $('#productForm').onsubmit = async (e) => {
+      e.preventDefault();
+      $('#submitBtn').disabled = true;
+      $('#submitBtn').textContent = 'Menyimpan...';
+      
+      const id = $('#editId').value;
+      const data = {
+        name: $('#name').value.trim(),
+        price: parseInt($('#price').value),
+        cat: $('#cat').value.trim(),
+        stok: parseInt($('#stok').value),
+        img: $('#imgUrl').value.trim()
+      };
+      
+      try {
+        if (id) {
+          await update(ref(db, 'products/' + id), data);
+          showToast('Menu berhasil diupdate');
+        } else {
+          await push(ref(db, 'products'), data);
+          showToast('Menu berhasil ditambah');
+        }
+        resetForm();
+      } catch (err) {
+        showToast('Error: ' + err.message);
+      } finally {
+        $('#submitBtn').disabled = false;
+        $('#submitBtn').textContent = 'Simpan Menu';
+      }
+    };
+    
+    $('#adminForm').onsubmit = async (e) => {
+      e.preventDefault();
+      const email = $('#adminEmailInput').value;
+      const pass = $('#adminPassInput').value;
+      try {
+        await createUserWithEmailAndPassword(auth, email, pass);
+        await set(ref(db, 'admins/' + auth.currentUser.uid), { email: email, created: Date.now() });
+        showToast('Admin baru berhasil didaftarkan');
+        $('#adminForm').reset();
+      } catch (err) {
+        showToast('Gagal daftar admin: ' + err.message);
+      }
+    };
+    </script> 
+    </body> 
+    </html>
